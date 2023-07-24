@@ -1,25 +1,14 @@
-// Pagination.tsx 파일
-
-import React from "react";
+import React, { useState } from "react";
 import { NextIcon, PreviousIcon } from "../icons";
 
-interface PaginationProps {
-  currentPage: number; // 현재 페이지 번호
-  totalPages: number; // 전체 페이지 수
-  onPageChange: (pageNumber: number) => void; // 페이지 변경 시 호출되는 함수
-}
+export default function Pagination() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 10;
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: PaginationProps) => {
-  // 페이지 변경 시 호출되는 함수
   const handlePageChange = (page: number) => {
-    onPageChange(page); // 부모 컴포넌트(SearchResult)에서 제공하는 onPageChange 함수를 호출하여 currentPage를 업데이트합니다.
+    setCurrentPage(page);
   };
 
-  // 페이지 번호를 렌더링하는 함수
   const renderPageNumbers = () => {
     const pages = [];
 
@@ -54,7 +43,7 @@ const Pagination = ({
         <li>
           <a
             href="#"
-            className={`block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700   ${
+            className={`block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white  hover:bg-gray-100 hover:text-gray-700   ${
               currentPage === 1 ? "pointer-events-none" : ""
             }`}
             onClick={() => handlePageChange(currentPage - 1)}
@@ -79,6 +68,4 @@ const Pagination = ({
       </ul>
     </nav>
   );
-};
-
-export default Pagination;
+}
