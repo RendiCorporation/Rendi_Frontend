@@ -7,7 +7,6 @@ import Layout from "@/layouts/layout";
 import Head from "next/head";
 import { useState } from "react";
 import { signUpState, SignUpState } from "@/libs/client/atom";
-import axios from "axios";
 import { ASignUpProps, usersApi } from "@/libs/api";
 
 interface ITasteForm {
@@ -38,13 +37,6 @@ function Taste() {
       ...signUpData.profile,
       interests: selectedItemIds,
     };
-
-    // const updatedSignUpData: SignUpState = {
-    //   ...signUpData,
-    //   profile: updatedProfile,
-    // } ;
-
-    // setSignUpData(updatedSignUpData);
 
     const { profile, ...restOfSignUpData } = signUpData;
 

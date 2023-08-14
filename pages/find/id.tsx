@@ -3,12 +3,9 @@ import SubmitBtn from "@/components/function/submitBtn";
 import Input from "@/components/function/input";
 import Layout from "@/layouts/layout";
 import Head from "next/head";
-import { useState } from "react";
-import { AFindIDProps } from "@/libs/api";
-
-export interface IFindIDProps extends AFindIDProps {
-  authCode: string;
-}
+import { AFindIDProps, usersApi } from "@/libs/api";
+import { useRecoilState } from "recoil";
+import { UserInputState, findIDInputState } from "@/libs/client/atom";
 
 function FindID() {
   const {
@@ -16,22 +13,37 @@ function FindID() {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<IFindIDProps>({
+  } = useForm<UserInputState>({
     mode: "onChange",
   });
 
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [authCode, setAuthCode] = useState("");
+  const [findIDInputValue, setFindIDInputValue] =
+    useRecoilState(findIDInputState);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     // 입력값 가져오기
 
-    const nickname = watch("nickname");
-    const email = watch("email");
+    const nickname = watch("profile.nickname");
+    const email = watch("profile.email");
+
+    const updatedFindID: AFindIDProps = {
+      nickname,
+      email,
+    };
+
+    try {
+      const findIDResponse = await usersApi.findID(updatedFindID);
+      console.log(findIDResponse);
+
+      if (findIDResponse?.success) {
+        console.log("아이디 찾기 성공!");
+      }
+    } catch (error) {
+      console.log("아이디 찾기 오류");
+    }
   };
 
-  const submitForm: SubmitHandler<IFindIDProps> = (data: IFindIDProps) => {
+  const submitForm: SubmitHandler<UserInputState> = (data: UserInputState) => {
     console.log(data);
 
     handleClick();
@@ -57,13 +69,11 @@ function FindID() {
 
                 <div className="relative top-[133px]">
                   <Input
-                    name="nickname"
+                    name="profile.nickname"
                     label="이름"
                     type="nickname"
                     kind="text"
-                    inputNameValue={nickname}
-                    onChange={setNickname}
-                    register={register("nickname", {
+                    register={register("profile.nickname", {
                       required: "한글로 입력해주세요.",
                       pattern: {
                         value:
@@ -72,18 +82,18 @@ function FindID() {
                       },
                     })}
                     placeholder="이름"
-                    error={errors?.nickname?.message}
+                    error={errors?.profile?.nickname?.message}
+                    inputValue={findIDInputValue}
+                    setInputValue={setFindIDInputValue}
                   />
 
                   <Input
-                    name="email"
+                    name="profile.email"
                     label="이메일"
                     checkLabel="인증"
                     type="email"
                     kind="check"
-                    inputEmailValue={email}
-                    onChange={setEmail}
-                    register={register("email", {
+                    register={register("profile.email", {
                       required: "이메일을 입력하세요",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -91,7 +101,9 @@ function FindID() {
                       },
                     })}
                     placeholder="유효한 이메일 주소를 입력하세요."
-                    error={errors.email?.message}
+                    error={errors.profile?.email?.message}
+                    inputValue={findIDInputValue}
+                    setInputValue={setFindIDInputValue}
                   />
 
                   <Input
@@ -100,13 +112,13 @@ function FindID() {
                     checkLabel="확인"
                     type="authCode"
                     kind="check"
-                    inputAuthCodeValue={authCode}
-                    onChange={setAuthCode}
                     register={register("authCode", {
                       required: "인증번호를 입력하세요",
                     })}
                     placeholder="인증번호를 입력하세요."
                     error={errors?.authCode?.message}
+                    inputValue={findIDInputValue}
+                    setInputValue={setFindIDInputValue}
                   />
                 </div>
 

@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Segmented } from "antd";
 import { useEffect, useState } from "react";
-import { SignUpState, signUpState } from "@/libs/client/atom";
+import { SignUpState, signUpInputState, signUpState } from "@/libs/client/atom";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 
@@ -27,15 +27,17 @@ function Signup() {
     mode: "onChange",
   });
 
+  // taste.tsx에서 이뤄지는 백엔드와의 소통을 위한 atom. 찐 회원가입용 atom
   const [signUpData, setSignUpData] = useRecoilState(signUpState);
+
+  // 사용자 입력값 확인용 atom
+  const [signUpInputValue, setSignUpInputValue] =
+    useRecoilState(signUpInputState);
+
   const router = useRouter();
 
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [authCode, setAuthCode] = useState("");
-
   const handleClick = () => {
-    // 입력값 가져오기
+    // 입력값 가져오기(submit 이후)
     const username = watch("username");
     const password = watch("password");
     const cPassword = watch("cPassword");
@@ -61,6 +63,7 @@ function Signup() {
         interests,
       },
     };
+
     setSignUpData(updatedSignUpData);
 
     console.log(updatedSignUpData);
@@ -80,7 +83,7 @@ function Signup() {
     <>
       <Layout>
         <Head>
-          <title>SignUp</title>
+          <title>Signup</title>
         </Head>
 
         <div className=" mt-[104px] flex w-full h-[1500px] flex-col bg-white text-lg font-medium ">
@@ -114,6 +117,9 @@ function Signup() {
                   kind="check"
                   watch={watch}
                   errors={errors}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
+                  onValueChange
                 />
 
                 <Input
@@ -138,6 +144,8 @@ function Signup() {
                   placeholder="비밀번호"
                   error={errors?.password?.message}
                   autoComplete="off"
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <Input
@@ -154,6 +162,8 @@ function Signup() {
                   placeholder="비밀번호 확인"
                   error={errors?.cPassword?.message}
                   autoComplete="off"
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <Input
@@ -161,8 +171,6 @@ function Signup() {
                   label="이름"
                   type="nickname"
                   kind="text"
-                  inputNameValue={nickname}
-                  onChange={setNickname}
                   register={register("profile.nickname", {
                     required: "한글로 입력해주세요.",
                     pattern: {
@@ -172,6 +180,9 @@ function Signup() {
                   })}
                   placeholder="이름"
                   error={errors?.profile?.nickname?.message}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
+                  onValueChange
                 />
 
                 <Input
@@ -188,6 +199,8 @@ function Signup() {
                   })}
                   placeholder="YYYY-MM-DD"
                   error={errors?.profile?.birth?.message}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <div className="font-bold text-[#666]">
@@ -235,6 +248,8 @@ function Signup() {
                   })}
                   placeholder="-를 제외하고 입력하세요."
                   error={errors?.profile?.phonenum?.message}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <Input
@@ -243,8 +258,6 @@ function Signup() {
                   checkLabel="인증"
                   type="email"
                   kind="check"
-                  inputEmailValue={email}
-                  onChange={setEmail}
                   register={register("profile.email", {
                     required: "이메일을 입력하세요",
                     pattern: {
@@ -253,7 +266,9 @@ function Signup() {
                     },
                   })}
                   placeholder="유효한 이메일 주소를 입력하세요."
-                  error={errors.profile?.email?.message}
+                  error={errors?.profile?.email?.message}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <Input
@@ -262,13 +277,13 @@ function Signup() {
                   checkLabel="확인"
                   type="authCode"
                   kind="check"
-                  inputAuthCodeValue={authCode}
-                  onChange={setAuthCode}
                   register={register("authCode", {
                     required: "인증번호를 입력하세요",
                   })}
                   placeholder="인증번호를 입력하세요."
                   error={errors?.authCode?.message}
+                  inputValue={signUpInputValue}
+                  setInputValue={setSignUpInputValue}
                 />
 
                 <div className="flex mt-[40px] text-center justify-center">

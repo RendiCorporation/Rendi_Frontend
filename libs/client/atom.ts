@@ -17,10 +17,19 @@ export interface SignUpState {
   phoneAgreeYn: string;
 }
 
-export interface LoginState {
-  username: string;
+export interface UserInputState {
+  username?: string;
+  password?: string;
+  profile: {
+    nickname: string;
+    email: string;
+    birth?: string;
+    phonenum?: string;
+  };
+  authCode: string;
 }
 
+// 찐 회원가입용 atom. taste 페이지에서 회원가입 post 시 사용
 export const signUpState = atom<SignUpState>({
   key: "signUpState",
   default: {
@@ -39,149 +48,64 @@ export const signUpState = atom<SignUpState>({
   },
 });
 
-// // 추가
-// export interface filterState {
-//   showList: { value: string; label: string }[];
-//   categoryList: { value: string; label: string }[];
-//   colorList: { value: string; label: string }[];
-// }
+// signUp 페이지에서 사용자 입력값을 받아오기 위한 일시적 atom
+export const signUpInputState = atom<UserInputState>({
+  key: "signUpInputState",
+  default: {
+    username: "",
+    profile: {
+      nickname: "",
+      email: "",
+    },
+    authCode: "",
+  },
+});
 
-// export const filterState = atom<filterState>({
-//   key: "filterState",
-//   default: {
-//     showList: [
-//       {
-//         value: "recommended",
-//         label: "추천순",
-//       },
-//       {
-//         value: "popularity",
-//         label: "인기순",
-//       },
-//       {
-//         value: "priceLowToHigh",
-//         label: "낮은 가격순",
-//       },
-//       {
-//         value: "priceHighToLow",
-//         label: "높은 가격순",
-//       },
-//     ],
-//     categoryList: [
-//       {
-//         value: "all",
-//         label: "전체",
-//       },
-//       {
-//         value: "top",
-//         label: "상의",
-//       },
-//       {
-//         value: "outer",
-//         label: "아우터",
-//       },
-//       {
-//         value: "dress",
-//         label: "원피스",
-//       },
-//       {
-//         value: "pants",
-//         label: "바지",
-//       },
-//       {
-//         value: "skirt",
-//         label: "스커트",
-//       },
-//       {
-//         value: "training",
-//         label: "트레이닝",
-//       },
-//       {
-//         value: "inner",
-//         label: "이너웨어",
-//       },
-//       {
-//         value: "swimsuit",
-//         label: "수영복",
-//       },
-//       {
-//         value: "shoes",
-//         label: "슈즈",
-//       },
-//       {
-//         value: "bag",
-//         label: "가방",
-//       },
-//       {
-//         value: "etc",
-//         label: "기타",
-//       },
-//     ],
-//     colorList: [
-//       {
-//         value: "black",
-//         label: "블랙",
-//       },
-//       {
-//         value: "white",
-//         label: "화이트",
-//       },
-//       {
-//         value: "gray",
-//         label: "그레이",
-//       },
-//       {
-//         value: "red",
-//         label: "레드",
-//       },
-//       {
-//         value: "orange",
-//         label: "오렌지",
-//       },
-//       {
-//         value: "yellow",
-//         label: "옐로우",
-//       },
-//       {
-//         value: "green",
-//         label: "그린",
-//       },
-//       {
-//         value: "blue",
-//         label: "블루",
-//       },
-//       {
-//         value: "navy",
-//         label: "네이비",
-//       },
-//       {
-//         value: "purple",
-//         label: "퍼플",
-//       },
-//       {
-//         value: "pink",
-//         label: "핑크",
-//       },
-//       {
-//         value: "brown",
-//         label: "브라운",
-//       },
-//       {
-//         value: "beige",
-//         label: "베이지",
-//       },
-//       {
-//         value: "khaki",
-//         label: "카키",
-//       },
-//       {
-//         value: "silver",
-//         label: "실버",
-//       },
-//       {
-//         value: "gold",
-//         label: "골드",
-//       },
-//     ],
-//   },
+// findID 페이지에서 사용자 입력값을 받아오기 위한 일시적 atom
+export const findIDInputState = atom<UserInputState>({
+  key: "findIDInputState",
+  default: {
+    profile: {
+      nickname: "",
+      email: "",
+    },
+    authCode: "",
+  },
+});
+
+// findPW 페이지에서 사용자 입력값을 받아오기 위한 일시적 atom
+export const findPWInputState = atom<UserInputState>({
+  key: "findPWInputState",
+  default: {
+    profile: {
+      nickname: "",
+      email: "",
+    },
+    authCode: "",
+  },
+});
+
+// 회원정보 수정 페이지에서 사용자 입력값을 받아오기 위한 일시적 atom
+export const editInfoInputState = atom<UserInputState>({
+  key: "editInfoInputState",
+  default: {
+    profile: {
+      nickname: "",
+      email: "",
+      birth: "",
+      phonenum: "",
+    },
+    authCode: "",
+  },
+});
+
+// export const editInfoState = atom<UserInputState>({
+//   key: "editInfoState",
+//   default: {},
 // });
+
+//
+export const backendVeriCodeState = atom<string>({
+  key: "backendVeriCodeState",
+  default: "",
+});
