@@ -7,6 +7,16 @@ interface FilterPopupProps {
   onResetFilters: () => void;
 }
 
+// interface Filters {
+//   sortOrder: string;
+//   category: string;
+//   subcategory: string[];
+//   color: string[];
+//   price: { min: number; max: number };
+//   //   size: string;
+//   //   brand: string;
+//   // 다른 필터 옵션들을 여기에 추가하세요
+// }
 interface Filters {
   sortOrder: string;
   category: string;

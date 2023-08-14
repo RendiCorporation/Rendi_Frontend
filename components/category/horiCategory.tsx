@@ -17,7 +17,7 @@ export default function HoriCategory() {
   ];
 
   return (
-    <div className="flex h-[100px] w-[1040px] items-center justify-center bg-white shadow">
+    <div className="flex h-[100px] w-[1040px] items-center justify-center bg-white shadow mobile-[500px] ">
       {icons.map((icon) => (
         <Circle key={icon} icon={icon} />
       ))}

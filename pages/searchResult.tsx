@@ -26,6 +26,24 @@ export default function SearchResult() {
   // 현재 페이지 상태값 추가
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [screen, setScreen] = useState("laptop");
+
+  useEffect(() => {
+    const handleResize = () => {
+      console.log(window.innerWidth);
+      if (window.innerWidth <= 640) {
+        setScreen("mobile");
+      } else {
+        setScreen("laptop");
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize(); // 초기화
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -41,9 +59,23 @@ export default function SearchResult() {
         <title>SearchResult</title>
       </Head>
       <div className="flex items-center justify-center">
-        <div className="flex-col w-[1040px] pb-[32px]">
-          <div className="flex items-center w-[1040px] h-[60px] mt-[135px] text-lg font-medium ">
-            <p className="flex justify-start text-lg text-left">
+        <div
+          className={`flex-col  pb-[32px] ${
+            screen === "mobile" ? "mt-[50px] w-full" : "mt-[135px] w-[1040px]"
+          }`}
+        >
+          <div
+            className={`flex items-center h-[60px] ${
+              screen === "mobile"
+                ? "mobile:mt-[25px] ml-[10px] w-full"
+                : "top-[30px]  w-[1040px]"
+            }`}
+          >
+            <p
+              className={`flex justify-start text-lg text-left ${
+                screen === "mobile" ? "text-sm" : "text-lg"
+              }`}
+            >
               “<span className="text-[#fc435a]">{search}</span>” 검색결과 ( 전체
               <span className="text-[#fc435a]">{totalItems}</span>개의 상품 )
             </p>

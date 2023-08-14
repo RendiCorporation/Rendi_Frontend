@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Category {
   cate: string;
@@ -29,7 +29,22 @@ export default function ProdBar({
     { cate: "패션잡화" },
     { cate: "기타" },
   ];
+  const [screen, setScreen] = useState("laptop");
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 640) {
+        setScreen("mobile");
+      } else {
+        setScreen("laptop");
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const handleButtonClick = (cate: string) => {
     setActiveCate(cate);
   };
@@ -43,7 +58,13 @@ export default function ProdBar({
   }
 
   return (
-    <nav className="relative h-[60px] text-[14px] text-[#666] bg-white py-[11px] text-base flex shadow-md space-x-[60px] items-center justify-center">
+    <nav
+      className={`relative h-[${screen === "mobile" ? "40px" : "60px"}] text-[${
+        screen === "mobile" ? "12px" : "14px"
+      }] text-[#666] bg-white py-[6px] text-base flex shadow-md space-x-[${
+        screen === "mobile" ? "30px" : "60px"
+      }] items-center justify-center mobile:h-[30px] `}
+    >
       {categories.map(({ cate }) => (
         <button
           key={cate}
@@ -52,9 +73,20 @@ export default function ProdBar({
             activeCate === cate ? "text-black" : ""
           } hover:text-black`}
         >
-          <p>{cate}</p>
+          <p className="mobile:text-[8pt] mobile:m-1">{cate}</p>
         </button>
       ))}
     </nav>
   );
+}
+{
+  /* <nav className="relative h-[60px] text-[14px] text-[#666] bg-white py-[11px] text-base flex shadow-md space-x-[60px] items-center justify-center">
+{categories.map(({ cate }) => (
+  <button
+    key={cate}
+    onClick={() => handleButtonClick(cate)}
+    className={`${
+      activeCate === cate ? "text-black" : ""
+    } hover:text-black`}
+  > */
 }
