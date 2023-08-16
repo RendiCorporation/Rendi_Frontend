@@ -6,10 +6,8 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 import {
   onAuthCodeVerification,
   onEmailVerification,
-  onUsernameVerification,
+  onUsernameVerfication,
 } from "@/libs/client/useVerification";
-import { backendVeriCodeState } from "@/libs/client/atom";
-import { RecoilState, useRecoilState } from "recoil";
 
 interface InputProps {
   kind?: "text" | "check" | "disabled";
@@ -17,8 +15,9 @@ interface InputProps {
   checkLabel?: string;
   name: string;
   register: UseFormRegisterReturn;
-  setInputValue?: (newState: any) => void; // Recoil 상태 업데이트 함수
-  onValueChange?: boolean;
+  inputNameValue?: any;
+  inputEmailValue?: any;
+  inputAuthCodeValue?: any;
   [key: string]: any;
 }
 
@@ -28,52 +27,13 @@ export default function Input({
   name,
   register,
   kind = "text",
+  inputNameValue,
+  inputEmailValue,
+  inputAuthCodeValue,
   error,
-  inputValue, // Recoil 상태 추가
-  setInputValue, // Recoil 상태 업데이트 함수 추가
-  onValueChange = false,
   ...rest
 }: InputProps) {
   const { ref, onChange, ...inputProps } = register;
-
-  const [backendVeriCode, setBackendVeriCode] =
-    useRecoilState(backendVeriCodeState);
-
-  // Input 컴포넌트의 onChange 핸들러를 호출할 때마다, 사용자 입력값을 해당 상태로 업데이트
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
-    if (setInputValue) {
-      setInputValue((prevInputValues: any) => {
-        const fieldPath = name.split("."); // 입력 필드 이름을 '.'로 분리
-
-        if (fieldPath.length === 1) {
-          // 입력 필드가 profile 외부에 있는 경우
-          return {
-            ...prevInputValues,
-            [name]: value,
-          };
-        }
-
-        if (fieldPath[0] === "profile") {
-          // 입력 필드가 profile 내부에 있는 경우
-          return {
-            ...prevInputValues,
-            profile: {
-              ...prevInputValues.profile,
-              [fieldPath[1]]: value,
-            },
-          };
-        }
-
-        // 위 조건에 해당하지 않는 경우
-        return prevInputValues;
-      });
-    }
-
-    onChange(event); // 기존의 onChange 핸들러도 호출
-    // onValueChange(event);
-  };
 
   let inputComponent;
   if (kind === "text") {
@@ -83,8 +43,7 @@ export default function Input({
           {...inputProps}
           {...rest}
           ref={ref}
-          // onChange={onValueChange ? handleChange : onChange}
-          onChange={handleChange}
+          onChange={onChange}
           className={cls(
             "w-[448px] h-[55px] rounded-[50px] bg-white border border-[#e0e0e0] px-[20px] py-[19.25px] placeholder-gray-400 placeholder: shadow-sm focus:border-[#666] focus:outline-none focus:ring-[#FC435A]",
             error
@@ -111,26 +70,15 @@ export default function Input({
           )}
           id={name}
           name={name}
-          onChange={handleChange}
         />
         <button
-          type="button"
-          onClick={async () => {
+          onClick={() => {
             if (checkLabel === "중복확인") {
-              console.log(inputValue.username);
-              onUsernameVerification(inputValue.username);
+              onUsernameVerfication(inputNameValue);
             } else if (checkLabel === "인증") {
-              console.log(inputValue);
-              const VeriCode = await onEmailVerification(
-                inputValue.profile.nickname,
-                inputValue.profile.email
-              );
-              console.log(VeriCode);
-              setBackendVeriCode(VeriCode);
-            }
-            if (checkLabel === "확인") {
-              console.log(backendVeriCode);
-              onAuthCodeVerification(inputValue.authCode, backendVeriCode);
+              onEmailVerification(inputNameValue, inputEmailValue);
+            } else if (checkLabel === "확인") {
+              onAuthCodeVerification(inputAuthCodeValue);
             }
           }}
           className="absolute top-[10px] right-[20px] w-[67px] h-[35px] bg-[#FC435A] rounded-[50px] text-base text-white flex justify-center items-center"
